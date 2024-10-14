@@ -50,23 +50,6 @@ export const menusConfig = {
     {
       title: "Dashboard",
       icon: DashBoard,
-      child: [
-        {
-          title: "Analytics",
-          href: "/dashboard",
-          icon: Graph,
-        },
-        {
-          title: "Ecommerce",
-          href: "/ecommerce",
-          icon: Cart,
-        },
-        {
-          title: "Project ",
-          href: "/project",
-          icon: ClipBoard,
-        },
-      ],
     },
     {
       title: "Application",
@@ -1018,18 +1001,7 @@ export const menusConfig = {
       {
         title: "Products",
         icon: ListFill,
-        child: [
-          {
-            title: "product List",
-            icon: ListFill,
-            href: "/products",
-          },
-          {
-            title: "product Details",
-            icon: ListFill,
-            href: "/products/1/overview",
-          },
-        ],
+        href: "/products",
       },
 
       //USers
@@ -1128,54 +1100,54 @@ export const menusConfig = {
         href: "/offers",
       },
 
-      {
-        title: "Application",
-        icon: Application,
-        child: [
-          {
-            title: "chat",
-            icon: Messages,
-            href: "/chat",
-          },
-          {
-            title: "email",
-            icon: Envelope,
-            href: "/email",
-          },
-          {
-            title: "kanban",
-            icon: Monitor,
-            href: "/kanban",
-          },
-          {
-            title: "task",
-            icon: ListFill,
-            href: "/task",
-          },
-          {
-            title: "calendar",
-            icon: Calendar,
-            href: "/calendar",
-          },
+      // {
+      //   title: "Application",
+      //   icon: Application,
+      //   child: [
+      //     {
+      //       title: "chat",
+      //       icon: Messages,
+      //       href: "/chat",
+      //     },
+      //     {
+      //       title: "email",
+      //       icon: Envelope,
+      //       href: "/email",
+      //     },
+      //     {
+      //       title: "kanban",
+      //       icon: Monitor,
+      //       href: "/kanban",
+      //     },
+      //     {
+      //       title: "task",
+      //       icon: ListFill,
+      //       href: "/task",
+      //     },
+      //     {
+      //       title: "calendar",
+      //       icon: Calendar,
+      //       href: "/calendar",
+      //     },
 
-          {
-            title: "project",
-            icon: ClipBoard,
-            nested: [
-              {
-                title: "project List",
-                icon: ClipBoard,
-                href: "/products",
-              },
-              {
-                title: "project Details",
-                icon: ClipBoard,
-                href: "/projects/1/overview",
-              },
-            ],
-          },
-        ],
-      },
+      //     {
+      //       title: "project",
+      //       icon: ClipBoard,
+      //       nested: [
+      //         {
+      //           title: "project List",
+      //           icon: ClipBoard,
+      //           href: "/products",
+      //         },
+      //         {
+      //           title: "project Details",
+      //           icon: ClipBoard,
+      //           href: "/projects/1/overview",
+      //         },
+      //       ],
+      //     },
+      //   ],
+      // },
 
       {
         title: "Components",
