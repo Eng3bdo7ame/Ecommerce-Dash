@@ -14,6 +14,7 @@ import Image from "next/image";
 import { SiteLogo } from "@/components/svg";
 import { Icon } from "@iconify/react";
 import { Checkbox } from "@/components/ui/checkbox";
+import Cookies from "js-cookie";  // استيراد مكتبة js-cookie
 
 import googleIcon from "@/public/images/auth/google.png";
 import facebook from "@/public/images/auth/facebook.png";
@@ -67,6 +68,9 @@ const LogInForm = () => {
         const result = await response.json();
 
         if (response.ok) {
+          // حفظ الـ token في الـ cookies
+          Cookies.set("token", result.token, { expires: 7 }); // تخزين الـ token لمدة 7 أيام
+
           toast.success("Login Successful");
           window.location.assign("/dashboard"); // التوجيه إلى الصفحة الرئيسية
           reset(); // إعادة تعيين الحقول
