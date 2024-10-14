@@ -12,48 +12,42 @@ const UsersView = () => {
     const [users, setUsers] = useState([]);
     const token = cookies.get("token");
 
-    // useEffect(() => {
-    //     const getUsers = async () => {
-    //         try {
-    //             const response = await fetch("https://elmobdia.cowdly.com/api/accounts/users", {
-    //                 method: "GET",
-    //                 headers: {
-    //                     "Content-Type": "application/json",
-    //                     "Authorization": `Bearer ${token}`,
-    //                 },
-    //             });
+    useEffect(() => {
+        const getUsers = async () => {
+            try {
+                const response = await fetch("https://elmobdia.cowdly.com/api/accounts/users", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                });
 
-    //             const data = await response.json();
+                const data = await response.json();
 
-    //             setUsers(data);
-    //         } catch (error) {
-    //             console.error("Error fetching users:", error);
-    //         }
-    //     };
+                setUsers(data);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        };
 
-    //     if (token) {
-    //         getUsers();
-    //     } else {
-    //         console.error("Token is not available.");
-    //     }
-    // }, [token]);
+        if (token) {
+            getUsers();
+        } else {
+            console.error("Token is not available.");
+        }
+    }, [token]);
 
     return (
         <div className="space-y-5">
-            <Blank className="max-w-[320px] mx-auto flex flex-col items-center justify-center h-full space-y-3">
-                <div className=" text-default-900 text-xl font-semibold">
-                    No Project Here
-                </div>
-                <div className=" text-sm  text-default-600 ">
-                    There is no task create. If you create a new task then click this
-                    button & create new board.
-                </div>
-                <div></div>
-                <Button onClick={addProjectModal}>
-                    <Plus className="w-4 h-4 text-primary-foreground mr-2" />
-                    Add Project
-                </Button>
-            </Blank>
+            {users.map((user) => (
+                <Card key={user.id}>
+                    <CardContent>
+                        <p>{user.name}</p>
+                        <p>{user.email}</p>
+                    </CardContent>
+                </Card>
+            ))}
         </div>
     );
 };
