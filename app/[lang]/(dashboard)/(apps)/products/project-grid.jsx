@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MoreHorizontal } from "lucide-react";
 import {
   DropdownMenu,
@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-
 import {
   Card,
   CardContent,
@@ -27,18 +26,22 @@ import {
 } from "@/components/ui/avatar";
 import { Icon } from "@iconify/react";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
+import { useTheme } from "next-themes";
 
+// خريطة الألوان بناءً على الأولوية
 const prioritiesColorMap = {
   high: "destructive",
   low: "info",
   medium: "warning",
 };
-import { useTheme } from "next-themes";
+
 const ProjectGrid = ({ project, onEdit }) => {
   const [open, setOpen] = React.useState(false);
+
   async function onAction(id) {
     await deleteProjectAction(id);
   }
+
   const { theme: mode } = useTheme();
 
   return (
@@ -126,7 +129,7 @@ const ProjectGrid = ({ project, onEdit }) => {
             <div className="flex gap-2">
               <div>
                 <Avatar className="rounded h-12 w-12">
-                  <AvatarImage src={project?.logo?.src} alt="" />
+                  <AvatarImage src={project?.image} alt={project?.title} />
                   <AvatarFallback className="rounded uppercase bg-success/30 text-success">
                     {project?.title?.slice(0, 2)}
                   </AvatarFallback>
@@ -148,69 +151,31 @@ const ProjectGrid = ({ project, onEdit }) => {
           <div className="flex  mt-6 gap-10">
             <div className="flex-1">
               <div className="text-sm font-medium text-default-900 mb-3">
-                Team:
+                Price:
               </div>
-              {project?.assign?.length > 0 && (
-                <div>
-                  <AvatarGroup
-                    max={3}
-                    total={project.assign.length}
-                    countClass="h-7 w-7"
-                  >
-                    {project.assign?.map((user, index) => (
-                      <Avatar
-                        className="ring-1 ring-background ring-offset-[2px]  ring-offset-background h-7 w-7 "
-                        key={`assign-member-${index}`}
-                      >
-                        <AvatarImage src={user?.image?.src} />
-                        <AvatarFallback>DC</AvatarFallback>
-                      </Avatar>
-                    ))}
-                  </AvatarGroup>
-                </div>
-              )}
+              <span className="text-sm font-medium text-default-900">
+                ${project?.price}
+              </span>
             </div>
-
             <div className="flex flex-col items-end">
-              <div className="text-sm font-medium text-default-900 mb-3 text-right ">
-                Priority:
+              <div className="text-sm font-medium text-default-900 mb-3 text-right">
+                Quantity:
               </div>
-              {project.priority && (
-                <Badge
-                  color={prioritiesColorMap[project.priority]}
-                  variant={mode === "dark" ? "solid" : "solid"}
-                  className=" capitalize"
-                >
-                  {project?.priority}
-                </Badge>
-              )}
+              <Badge
+                color={prioritiesColorMap[project?.category]}
+                variant={mode === "dark" ? "solid" : "solid"}
+                className=" capitalize"
+              >
+                {project?.quantity}
+              </Badge>
             </div>
-          </div>
-          <div className="mt-5">
-            <div className="flex justify-between mb-2">
-              <span className="text-sm font-medium text-default-900 capitalize">
-                Project Progress:
-              </span>
-              <span className="text-xs font-medium text-default-600">
-                {project?.percentage ? project?.percentage : 0}%
-              </span>
-            </div>
-            <Progress value={project?.percentage ? project?.percentage : 0} />
           </div>
         </CardContent>
-        <CardFooter className="flex justify-between border-t  p-4">
+        <CardFooter className="flex justify-between border-t p-4">
           <div>
-            <div className="text-xs  text-default-600 mb-[2px]">
-              Assigned Date:
-            </div>
+            <div className="text-xs text-default-600 mb-[2px]">Category:</div>
             <span className="text-xs font-medium text-default-900">
-              {project?.assignDate}
-            </span>
-          </div>
-          <div>
-            <div className="text-xs  text-default-600 mb-[2px]">Due Date:</div>
-            <span className="text-xs font-medium text-default-900">
-              {project?.dueDate}
+              {project?.category}
             </span>
           </div>
         </CardFooter>
@@ -219,4 +184,43 @@ const ProjectGrid = ({ project, onEdit }) => {
   );
 };
 
-export default ProjectGrid;
+// مكون لجلب المنتجات من الـ API
+const ProductsGrid = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("https://elmobdia.cowdly.com/api/products/");
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        setError("Error fetching products");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      {products.map((product) => (
+        <ProjectGrid key={product.id} project={product} />
+      ))}
+    </div>
+  );
+};
+
+export default ProductsGrid;
