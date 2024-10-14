@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
-import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -23,8 +22,9 @@ import GithubIcon from "@/public/images/auth/github.png";
 
 const schema = z.object({
   email: z.string().email({ message: "Your email is invalid." }),
-  password: z.string().min(4),
+  password: z.string().min(4, { message: "Password must be at least 4 characters." }),
 });
+
 import { useMediaQuery } from "@/hooks/use-media-query";
 
 const LogInForm = () => {
@@ -33,12 +33,9 @@ const LogInForm = () => {
   const isDesktop2xl = useMediaQuery("(max-width: 1530px)");
 
   const togglePasswordType = () => {
-    if (passwordType === "text") {
-      setPasswordType("password");
-    } else if (passwordType === "password") {
-      setPasswordType("text");
-    }
+    setPasswordType(passwordType === "text" ? "password" : "text");
   };
+
   const {
     register,
     handleSubmit,
@@ -48,30 +45,40 @@ const LogInForm = () => {
     resolver: zodResolver(schema),
     mode: "all",
     defaultValues: {
-      email: "dashtail@codeshaper.net",
-      password: "password",
+      email: "",
+      password: "",
     },
   });
-  const [isVisible, setIsVisible] = React.useState(false);
-
-  const toggleVisibility = () => setIsVisible(!isVisible);
 
   const onSubmit = (data) => {
     startTransition(async () => {
-      let response = await signIn("credentials", {
-        email: data.email,
-        password: data.password,
-        redirect: false,
-      });
-      if (response?.ok) {
-        toast.success("Login Successful");
-        window.location.assign("/dashboard");
-        reset();
-      } else if (response?.error) {
-        toast.error(response?.error);
+      try {
+        const response = await fetch("https://elmobdia.cowdly.com/api/accounts/login/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: data.email,
+            password: data.password,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          toast.success("Login Successful");
+          window.location.assign("/dashboard"); // التوجيه إلى الصفحة الرئيسية
+          reset(); // إعادة تعيين الحقول
+        } else {
+          toast.error(result.message || "Login failed. Please try again.");
+        }
+      } catch (error) {
+        toast.error("An error occurred. Please try again later.");
       }
     });
   };
+
   return (
     <div className="w-full py-10">
       <Link href="/dashboard" className="inline-block">
@@ -180,9 +187,7 @@ const LogInForm = () => {
           className="rounded-full  border-default-300 hover:bg-transparent"
           disabled={isPending}
           onClick={() =>
-            signIn("google", {
-              callbackUrl: "/dashboard",
-            })
+            toast.error("Google sign-in not implemented yet.")
           }
         >
           <Image src={googleIcon} alt="google" className="w-5 h-5" />
@@ -194,13 +199,10 @@ const LogInForm = () => {
           className="rounded-full  border-default-300 hover:bg-transparent"
           disabled={isPending}
           onClick={() =>
-            signIn("github", {
-              callbackUrl: "/dashboard",
-              redirect: false,
-            })
+            toast.error("GitHub sign-in not implemented yet.")
           }
         >
-          <Image src={GithubIcon} alt="google" className="w-5 h-5" />
+          <Image src={GithubIcon} alt="github" className="w-5 h-5" />
         </Button>
         <Button
           type="button"
@@ -208,7 +210,7 @@ const LogInForm = () => {
           variant="outline"
           className="rounded-full border-default-300 hover:bg-transparent"
         >
-          <Image src={facebook} alt="google" className="w-5 h-5" />
+          <Image src={facebook} alt="facebook" className="w-5 h-5" />
         </Button>
         <Button
           type="button"
@@ -216,7 +218,7 @@ const LogInForm = () => {
           variant="outline"
           className="rounded-full  border-default-300 hover:bg-transparent"
         >
-          <Image src={twitter} alt="google" className="w-5 h-5" />
+          <Image src={twitter} alt="twitter" className="w-5 h-5" />
         </Button>
       </div>
       <div className="mt-5 2xl:mt-8 text-center text-base text-default-600">

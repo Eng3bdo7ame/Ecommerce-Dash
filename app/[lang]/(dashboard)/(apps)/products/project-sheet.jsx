@@ -382,8 +382,8 @@ const ProjectsSheet = ({ open, project, onClose, selectedId }) => {
                     onClose()
                   }}
                 >
-                    Cancel
-                  </Button>
+                  Cancel
+                </Button>
 
                 <Button type="submit" disabled={isPending} className="flex-1">
                   {project ? "Update" : "  Create  "} Project
