@@ -7,7 +7,7 @@ import { Icon } from "@iconify/react";
 const fruits = [
   { value: "chocolate", label: "Chocolate" },
   { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" },
+  // { value: "vanilla", label: "Vanilla" },
   { value: "orange", label: "Orange" },
   { value: "apple", label: "Apple" },
 ];

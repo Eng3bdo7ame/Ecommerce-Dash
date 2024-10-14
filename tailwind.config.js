@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  swcMinify: false,
+
   important: true,
   darkMode: ["class"],
   content: [
